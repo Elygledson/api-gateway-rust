@@ -7,7 +7,10 @@ use rocket::fairing::{Fairing, Info, Kind};
 use rocket::http::{Method, Header};
 use rocket::http::hyper::header::{Authorization, Basic};
 use rocket::fairing::AdHoc;
+use serde_json::Value;
 use std::collections::HashSet;
+use rocket_contrib::json::{Json, JsonValue};
+use serde::{Serialize, Deserialize};
 
 #[macro_use] extern crate rocket;
 
@@ -21,22 +24,32 @@ fn index_get() -> &'static str {
     "This is the API gateway, please use POST method to call the microservice"
 }
 
-// Define rota "/" com o método POST e com o parâmetro "data" para receber dados no corpo da requisição
-#[post("/", data = "<data>")]
-fn index_post(data: String) -> &'static str {
-    // Cria um cliente HTTP utilizando a biblioteca reqwest
+
+
+#[derive(Serialize, Deserialize)]
+struct RequestData {
+    name: String,
+    age: u8,
+}
+
+#[derive(Serialize)]
+struct ResponseData {
+    message: String,
+}
+
+#[post("/", format = "json", data = "<data>")]
+fn index_post(data: Json<RequestData>) -> Json<ResponseData> {
     let client = reqwest::blocking::Client::new();
-    
-    // Envia uma requisição POST com os dados recebidos na rota para a URL do microserviço
     let response = client.post("http://localhost:8083")
-        .body(data)
+        .json(&data.0)
         .send()
         .unwrap();
-    
-    // Retorna o corpo da resposta do microserviço
     let body = response.text().unwrap();
-    return Box::leak(body.into_boxed_str());
+    let response_data = ResponseData { message: body };
+    return Json(response_data);
 }
+
+
 
 
 fn main() {
