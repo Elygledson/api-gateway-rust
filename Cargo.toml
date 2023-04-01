@@ -1,6 +1,0 @@
-[package]
-name = "api-gateway"
-version = "0.1.0"
-
-[dependencies]
-httparse = "1.4.0"
