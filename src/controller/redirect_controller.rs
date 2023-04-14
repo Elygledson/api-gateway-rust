@@ -3,7 +3,8 @@ use std::collections::HashMap;
 use rocket::serde::json::{Value, Json};
 use reqwest::StatusCode;
 
-use crate::interface::dto::{RequestBody, ResponseData};
+use crate::interface::request::{RequestBody};
+use crate::interface::response::{ResponseData};
 
 
 lazy_static! {
@@ -26,6 +27,7 @@ pub async fn method_delete(req: Json<RequestBody>) -> Result<Json<ResponseData>,
                 StatusCode::OK => {
                     let response_data = ResponseData {
                         status: status_code.as_u16(),
+                        message: "Requisição feita com sucesso".to_string(),
                         content: None
                     };
                     Ok(Json(response_data))
@@ -51,6 +53,7 @@ pub async fn method_get(req: Json<RequestBody>) -> Result<Json<ResponseData>, St
                     let json = response.json::<Value>().await.map_err(|e| format!("{}", e))?;
                     let response_data = ResponseData {
                         status: status_code.as_u16(),
+                        message: "Requisição feita com sucesso".to_string(),
                         content: Some(json),
                     };
                     Ok(Json(response_data))
@@ -76,6 +79,7 @@ pub async fn method_post(req: Json<RequestBody>) -> Result<Json<ResponseData>, S
                 StatusCode::CREATED => {
                     let response_data = ResponseData {
                         status: status_code.as_u16(),
+                        message: "Requisição feita com sucesso".to_string(),
                         content: None
                     };
                     Ok(Json(response_data))

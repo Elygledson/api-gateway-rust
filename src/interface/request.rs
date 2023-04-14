@@ -7,9 +7,3 @@ pub struct RequestBody {
     pub action: String,
     pub content: serde_json::Value,
 }
-
-#[derive(Serialize)]
-pub struct ResponseData {
-    pub status: u16,
-    pub content: Option<serde_json::Value>,
-}
