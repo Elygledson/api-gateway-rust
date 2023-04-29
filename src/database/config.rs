@@ -1,7 +1,7 @@
+use dotenv::dotenv;
 use mongodb::{Client, Database};
 use rocket::fairing::AdHoc;
 use std::env;
-use dotenv::dotenv;
 
 use crate::repository::mongodb_repo::MongoRepo;
 
@@ -18,10 +18,7 @@ pub async fn init() -> AdHoc {
 
 async fn connect() -> mongodb::error::Result<Database> {
     dotenv().ok();
-    let uri = match env::var("MONGOURI") {
-        Ok(v) => v.to_string(),
-        Err(_) => format!("Erro ao carregar variável de ambiente"),
-    };
+    let uri = env::var("MONGOURI").expect("Variável de ambiente MONGOURI não definida.");
     let client = Client::with_uri_str(uri).await.unwrap();
     Ok(client.database("gateway"))
 }
