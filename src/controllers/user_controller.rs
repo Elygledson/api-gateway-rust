@@ -57,7 +57,7 @@ pub async fn create_user(
 
 #[get("/user/<path>")]
 pub async fn get_user_by_id(
-    token: UserToken,
+    _token: UserToken,
     db: &State<MongoRepo>,
     path: String,
 ) -> Result<Json<User>, Status> {
@@ -65,7 +65,6 @@ pub async fn get_user_by_id(
     if id.is_empty() {
         return Err(Status::BadRequest);
     };
-    println!("{:?}", token);
     let user_detail = db.get_user_by_id(&id).await;
     match user_detail {
         Ok(Some(user)) => Ok(Json(user)),
@@ -75,7 +74,7 @@ pub async fn get_user_by_id(
 }
 
 #[delete("/user/<path>")]
-pub async fn delete_user(db: &State<MongoRepo>, path: String) -> Result<(), Status> {
+pub async fn delete_user(_token: UserToken,db: &State<MongoRepo>, path: String) -> Result<(), Status> {
     let id = path;
     if id.is_empty() {
         return Err(Status::BadRequest);

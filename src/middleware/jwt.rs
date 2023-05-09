@@ -11,6 +11,7 @@ use crate::model::user_model::User;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserToken {
+    pub iat: usize,
     pub exp: usize,
     pub id: ObjectId,
     pub email: String,
@@ -37,6 +38,7 @@ impl<'r> FromRequest<'r> for UserToken {
 
 pub fn generate_token(user: User) -> String {
     let payload = UserToken {
+        iat: Utc::now().timestamp() as usize,
         exp: (Utc::now() + Duration::hours(1)).timestamp() as usize,
         id: user.id.unwrap(),
         email: user.email,

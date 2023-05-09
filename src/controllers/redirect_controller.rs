@@ -5,6 +5,7 @@ use std::collections::HashMap;
 
 use crate::interfaces::request::RequestBody;
 use crate::interfaces::response::ResponseData;
+use crate::middleware::jwt::UserToken;
 
 lazy_static! {
     static ref URL_CACHE: HashMap<&'static str, String> = {
@@ -18,7 +19,7 @@ lazy_static! {
 }
 
 #[delete("/", format = "application/json", data = "<req>")]
-pub async fn method_delete(req: Json<RequestBody>) -> Result<Json<ResponseData>, String> {
+pub async fn method_delete(_token: UserToken,req: Json<RequestBody>) -> Result<Json<ResponseData>, String> {
     let client = reqwest::Client::new();
     let url = format!(
         "{}/{}",
@@ -46,7 +47,7 @@ pub async fn method_delete(req: Json<RequestBody>) -> Result<Json<ResponseData>,
 }
 
 #[get("/", format = "application/json", data = "<req>")]
-pub async fn method_get(req: Json<RequestBody>) -> Result<Json<ResponseData>, String> {
+pub async fn method_get(_token: UserToken,req: Json<RequestBody>) -> Result<Json<ResponseData>, String> {
     let client = reqwest::Client::new();
     let url = format!(
         "{}/{}",
@@ -79,7 +80,7 @@ pub async fn method_get(req: Json<RequestBody>) -> Result<Json<ResponseData>, St
 }
 
 #[post("/", format = "application/json", data = "<req>")]
-pub async fn method_post(req: Json<RequestBody>) -> Result<Json<ResponseData>, String> {
+pub async fn method_post(_token: UserToken,req: Json<RequestBody>) -> Result<Json<ResponseData>, String> {
     let client = reqwest::Client::new();
     let url = format!(
         "{}/{}",
